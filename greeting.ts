@@ -4,8 +4,18 @@ function sayHello(person: string): string {
    var user = "Super Student";
    document.getElementById("para").innerHTML = sayHello(user);
 
+    //interface
+    interface PersonOptions{
+        firstName: string;
+        lastName: string;
+        age?: number;
+        phoneNumber?:number;
+        state? : string;   
+    }
+         
+
    //create class
-   class person{
+   class Person{
        private firstName: string;
         private lastName: string;
         private age: number;
@@ -13,14 +23,14 @@ function sayHello(person: string): string {
         private state : string;
         private zipCode: number;
         private occupation: string;
-        public hourlyWage: number;
-        private hourly: number;
-        //private certs: string[];
+        private hourlyWage: number;
+        private certs: string[];
+        
         
         //constractor 
 
         constructor(firstName: string, lastName: string, age: number ,
-             phoneNumber:number , state:string, zipcode: number, occupation: string ,hourly: number ){
+             phoneNumber:number , state:string, zipcode: number, occupation: string ,hourlyWage: number ,certs?: string[] ){
                  this.firstName= firstName;
                  this.lastName= lastName;
                  this.age= age;
@@ -28,10 +38,16 @@ function sayHello(person: string): string {
                  this.state= state;
                  this.zipCode = zipcode;
                  this.occupation = occupation;
-                 this.hourly = hourly;
+                 this.hourlyWage = hourlyWage;
+                 if(certs){
+                     this.certs = certs;
+                 }
+                 else{
+                     this.certs =[];
+                 }
 
              }
-             //getter
+            //getter
              getFirstName() :string{
                 return this.firstName;
             }
@@ -54,9 +70,11 @@ function sayHello(person: string): string {
                 return this.occupation;
             }
             getHourly():number{
-                return this.hourly;
+                return this.hourlyWage;
             }
-            
+            getCerts():string[]{
+                return this.certs;
+            }
              
             //setter
             setFirstName(firstName: string): void{
@@ -82,8 +100,11 @@ function sayHello(person: string): string {
              setOccupation(occupation: string): void{
                 this.occupation= occupation;
              }
-             setHourly(hourly:number): void{
-                 this.hourly= hourly;
+             setHourly(hourlyWage:number): void{
+                 this.hourlyWage= hourlyWage;
+             }
+             setCerts(certs:string[]) : void{
+                 this.certs= certs;
              }
 
              //several combination methods
@@ -92,7 +113,7 @@ function sayHello(person: string): string {
                  return this.firstName + " " + this.lastName  
              } 
              address(): string{
-                 return this.getState + " " + this.getZipCode()
+                 return this.getState() + " " + this.getZipCode()
              }
 
              ageOccupation():string{
@@ -101,19 +122,57 @@ function sayHello(person: string): string {
 
 
                 //wedge calculator
-             /* weeklyWage(hourly?: number): string {
-                if (hourly) {
-                    this.hourly = hourly;
+              weeklyWage(hour?: number): number {
+                  let wage = 0;
+                if (hour) {
+                    wage = hour * this.hourlyWage;
                 } else {
-                    this.hourly = 40;
+                     wage= 40 * this.hourlyWage;
                 }
-                return "Weekly wage is $" + this.hourly * this.getHourlyWage() + ".";
-            } */
+                return wage; 
+            }
+            
+            //add certs method
+
+            addCerts(...newCerts:string[]): void{
+               this.certs.push(...newCerts) 
+            }
+
+            //function that implemets interface
+            //function createSquare(config: SquareConfig): { color: string; area: number } {
+            personInfo(employee: PersonOptions): {
+                firstName: string;
+                lastName: string;
+                age?: number;
+                phoneNumber?:number;
+                state? : string;} {
+                    let emp = {
+                        firstName:"Jonathan",
+                        lastName:"Smith",
+                        age:25,
+                        phoneNumber:3800000000,
+                        state:"MD"
+                    };
+                    emp.firstName = employee.firstName;
+                    emp.lastName = employee.lastName;
+                    if(employee.age){
+                        emp.age = employee.age;
+                    }
+                    if(employee.phoneNumber){
+                        emp.phoneNumber = employee.phoneNumber;
+                    }
+                    if(employee.state){
+                        emp.state = employee.state;
+                    }
+                
+                    return emp;
+                }
+            
               
          }
             //assigning the combination method to people
 
-             let employee1 = new person(
+             let employee1 = new Person(
                  "Anna",
                  "King",
                   29,
@@ -122,9 +181,10 @@ function sayHello(person: string): string {
                  27264,
                  "Developer",
                  50,
+                 ["MBA", "CSM", "MCSD"]
              );
 
-             let employee2 = new person(
+             let employee2 = new Person(
                 "Sam",
                "Jackson",
                30,
@@ -134,9 +194,26 @@ function sayHello(person: string): string {
               "Jav Developer",
               50
             );
-            //output
-            document.getElementById("user1").innerHTML = employee1.fullName();
-            document.getElementById("user2").innerHTML = employee2.address();
+            //output employee1
+            document.getElementById("section1").innerHTML = employee1.fullName();
+            document.getElementById("section2").innerHTML = employee1.address();
+            document.getElementById("section3").innerHTML = employee1.weeklyWage(50).toString();
+            employee1.addCerts("Java","Angular");
+            document.getElementById("section4").innerHTML = employee1.getCerts().join();
+            let employee = {
+                firstName:employee1.getFirstName(),
+                lastName:employee1.getLastName(),
+                age:employee1.getAge()
+                
+            };
+            document.getElementById("section5").innerHTML = employee1.personInfo(employee).phoneNumber.toString();
+
+            // output employee2
+            document.getElementById("section6").innerHTML = employee2.fullName();
+            document.getElementById("section7").innerHTML = employee2.address();
+            document.getElementById("section8").innerHTML = employee2.weeklyWage().toString();
+            employee2.addCerts("Angular");
+            document.getElementById("section9").innerHTML = employee2.getCerts().join();
 
             
 
